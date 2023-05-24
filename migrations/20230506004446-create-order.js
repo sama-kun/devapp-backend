@@ -17,11 +17,16 @@ module.exports = {
       customerId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
         references: {
           model: 'users',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -34,6 +39,17 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
     });
+    // await queryInterface.addConstraint('orders', {
+    //   fields: ['customerId'],
+    //   type: 'foreign key',
+    //   name: 'fk_orders_customerId',
+    //   references: {
+    //     table: 'users',
+    //     field: 'id',
+    //   },
+    //   onDelete: 'CASCADE',
+    //   onUpdate: 'CASCADE',
+    // });
   },
 
   async down(queryInterface, Sequelize) {

@@ -46,6 +46,13 @@ export class User extends Model<User, UserCreationAttrs> {
   @Column({ type: DataType.NUMBER, unique: true })
   bank: number;
 
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+    allowNull: false,
+    defaultValue: ['USER'],
+  })
+  roles: string[];
+
   async setPassword(password: string) {
     this.password = await bcrypt.hash(password, 10);
   }

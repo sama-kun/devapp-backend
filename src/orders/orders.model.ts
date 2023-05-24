@@ -9,6 +9,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 import { User } from 'src/users/users.model';
+import { Status } from './status-order.enum';
 
 interface OrderCreationAttrs {
   price: number;
@@ -27,15 +28,21 @@ export class Order extends Model<Order, OrderCreationAttrs> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  price: string;
+  price: number;
 
-  @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.TEXT,
     allowNull: false,
   })
+  description: string;
+
+  @ForeignKey(() => User)
+  @Column
   customerId: number;
 
   @BelongsTo(() => User)
   customer: User;
+
+  // @Column
+  // status: Status;
 }
