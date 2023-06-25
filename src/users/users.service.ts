@@ -1,35 +1,28 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { User } from './users.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Roles } from 'src/auth/roles.enum';
+import { Model } from 'mongoose';
+import { GetUserDto } from './dto/get-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User) private userRepository: typeof User) {}
+  constructor(@InjectModel(User.name) private userRepository: Model<User>) {}
 
-  async findByEmail(email: string) {
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-      include: {
-        all: true,
-      },
-    });
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ email });
+
+    console.log(user);
 
     return user;
   }
 
-  async findById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: {
-        id,
-      },
-      include: {
-        all: true,
-      },
-    });
+  async findById(id: string): Promise<User> {
+    const user = await this.userRepository
+      .findById(id)
+      .select('-password')
+      .exec();
     console.log(user);
     return user;
   }
@@ -50,12 +43,8 @@ export class UserService {
     }
   }
 
-  async getAll(): Promise<User[]> {
-    const users = await this.userRepository.findAll({
-      include: {
-        all: true,
-      },
-    });
+  async getAll(): Promise<GetUserDto[]> {
+    const users = await this.userRepository.find().select('-password').exec();
     console.log(users);
     return users;
   }

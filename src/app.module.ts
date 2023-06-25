@@ -1,32 +1,23 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserModule } from './users/users.module';
-import { User } from './users/users.model';
+import { User } from './users/users.schema';
 import { AuthModule } from './auth/auth.module';
-import { OrdersModule } from './orders/orders.module';
 //import { RolesModule } from './roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { Order } from './orders/orders.model';
-import { WorkersModule } from './workers/workers.module';
+import { EmailModule } from './email/email.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 console.log(String(process.env.POSTGRESS_PASSWORD));
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '12345678',
-      database: 'DevApp',
-      models: [User, Order],
-      autoLoadModels: true,
-      synchronize: true,
-    }),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     ConfigModule.forRoot({
       envFilePath: ['.env'],
+      isGlobal: true,
     }),
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
@@ -36,8 +27,7 @@ console.log(String(process.env.POSTGRESS_PASSWORD));
     }),
     UserModule,
     AuthModule,
-    OrdersModule,
-    WorkersModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

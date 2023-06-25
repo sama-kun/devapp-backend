@@ -4,6 +4,7 @@ import { UserModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import * as dotenv from 'dotenv';
+import { EmailModule } from 'src/email/email.module';
 dotenv.config();
 
 @Module({
@@ -18,6 +19,7 @@ dotenv.config();
         expiresIn: process.env.JWT_TOKEN_EXPIRES,
       },
     }),
+    EmailModule,
   ],
   exports: [AuthService, JwtModule],
 })

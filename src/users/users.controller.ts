@@ -8,6 +8,11 @@ import { UserService } from './users.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get('/test')
+  async test() {
+    return 'ok';
+  }
+
   @Post()
   async create(@Body() userDto: CreateUserDto) {
     const user = this.userService.create(userDto);
@@ -21,8 +26,10 @@ export class UserController {
     return await this.userService.getAll();
   }
 
+  @UseGuards(RolesQuard)
+  @Roles('ADMIN')
   @Get('/:id')
-  async getOne(@Param('id') id: number) {
+  async getOne(@Param('id') id: string) {
     return await this.userService.findById(id);
   }
 }
